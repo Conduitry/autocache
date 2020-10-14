@@ -1,0 +1,38 @@
+{
+	"name": "@conduitry/autocache",
+	"version": "0.0.0",
+	"description": "A cache that cleans itself",
+	"keywords": [
+		"cache"
+	],
+	"main": "dist/index.cjs.js",
+	"module": "dist/index.esm.js",
+	"types": "types/index.d.ts",
+	"files": [
+		"dist",
+		"types"
+	],
+	"engines": {
+		"node": "^12"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Conduitry/autocache.git"
+	},
+	"author": "Conduitry",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Conduitry/autocache/issues"
+	},
+	"devDependencies": {
+		"@types/node": "=12",
+		"rollup": "^2",
+		"rollup-plugin-cheap-ts": "Conduitry/rollup-plugin-cheap-ts#semver:^1",
+		"typescript": "^4"
+	},
+	"scripts": {
+		"build": "rollup -c",
+		"dev": "rollup -cw",
+		"prepare": "npm run build"
+	}
+}

@@ -14,12 +14,14 @@ export const autocache = (path: string, mode: Mode) => {
 				(loading = promises
 					.readFile(path)
 					.then(deserialize)
-					.then((data: Cache) => {
-						cache = data;
-						for (const [key, [, modes]] of cache) {
-							modes.delete(mode);
-							if (modes.size === 0) {
-								removing.add(key);
+					.then((data) => {
+						if (data && typeof data === 'object' && data.schema === 1 && data.cache instanceof Map) {
+							cache = data.cache;
+							for (const [key, [, modes]] of cache) {
+								modes.delete(mode);
+								if (modes.size === 0) {
+									removing.add(key);
+								}
 							}
 						}
 					})
@@ -45,7 +47,7 @@ export const autocache = (path: string, mode: Mode) => {
 			for (const key of removing) {
 				cache.delete(key);
 			}
-			writeFileSync(path, serialize(cache));
+			writeFileSync(path, serialize({ schema: 1, cache }));
 		},
 	};
 };

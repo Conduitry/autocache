@@ -17,13 +17,11 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Conduitry/autocache.git"
+		"url": "https://git.chor.date/Conduitry/autocache"
 	},
 	"author": "Conduitry",
 	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/Conduitry/autocache/issues"
-	},
+	"homepage": "https://git.chor.date/Conduitry/autocache",
 	"devDependencies": {
 		"@types/node": "=12",
 		"rollup": "^2",

@@ -1,11 +1,13 @@
 import { createHash } from 'crypto';
 import { promises, writeFileSync } from 'fs';
+import { resolve } from 'path';
 import { serialize, deserialize } from 'v8';
 
 type Mode = string | number | boolean | null | undefined;
 type Cache = Map<string, [any, Set<Mode>]>;
 
 export const autocache = (path: string, mode: Mode) => {
+	path = resolve(path);
 	let cache = <Cache>new Map();
 	const removing = new Set<string>();
 	const pending = new Map<string, any>();

@@ -2,30 +2,32 @@ import { createHash } from 'crypto';
 import { promises, writeFileSync } from 'fs';
 import { serialize, deserialize } from 'v8';
 
+type Mode = string | number | boolean | null | undefined;
+type Cache = Map<string, [any, Set<Mode>]>;
+
 export const autocache = (path: string, mode: Mode) => {
 	let cache = <Cache>new Map();
-	let loading: Promise<void>;
-	let removing = new Set<string>();
-	let pending = new Map<string, any>();
+	const removing = new Set<string>();
+	const pending = new Map<string, any>();
+	const loading = promises
+		.readFile(path)
+		.then(deserialize)
+		.then((data) => {
+			if (data && typeof data === 'object' && data.schema === 1 && data.cache instanceof Map) {
+				cache = data.cache;
+				for (const [key, [, modes]] of cache) {
+					modes.delete(mode);
+					if (modes.size === 0) {
+						removing.add(key);
+					}
+				}
+			}
+		})
+		.catch(() => {});
 	return {
 		async cache(key: string, compute_value: () => Promise<any>) {
+			await loading;
 			const key_hashed = createHash('sha1').update(key).digest('hex');
-			await (loading ||
-				(loading = promises
-					.readFile(path)
-					.then(deserialize)
-					.then((data) => {
-						if (data && typeof data === 'object' && data.schema === 1 && data.cache instanceof Map) {
-							cache = data.cache;
-							for (const [key, [, modes]] of cache) {
-								modes.delete(mode);
-								if (modes.size === 0) {
-									removing.add(key);
-								}
-							}
-						}
-					})
-					.catch(() => {})));
 			let value: any, modes: Set<Mode>;
 			if (cache.has(key_hashed)) {
 				[value, modes] = cache.get(key_hashed);
@@ -51,9 +53,3 @@ export const autocache = (path: string, mode: Mode) => {
 		},
 	};
 };
-
-type Mode = string | number | boolean | null | undefined;
-
-type CacheEntry = [any, Set<Mode>];
-
-type Cache = Map<string, CacheEntry>;

@@ -28,7 +28,7 @@ const cache = autocache('/path/to/cache.dat', 'mode name');
 
 This library has one named export, `autocache`, which is a function that accepts two arguments, `path` and `mode`.
 
-- `path` is a string of the path of the file that is to be used to persist the cache. It should either be an absolute path, or the current working directory of the process shouldn't change throughout its lifetime, since this path is passed directly to `readFile`/`writeFile` when loading and saving the cache data
+- `path` is a string of the path of the file that is to be used to persist the cache
 - `mode` is any primitive, immutable value representing the current build mode that the program is running in and which will affect when cache entries are eventually removed
 
 ```js
@@ -42,13 +42,13 @@ The value returned by `autocache` is an object containing two functions, `cache`
 - `cache` is a function to look up or to compute. It returns a `Promise` (resolving to the cached or computed value), and accepts two arguments, `key` and `compute_value`
 	- `key` is a string uniquely identifying in some way the operation whose result you want to cache. This is hashed before it's saved or compared, so it can be long without bloating the cache file
 	- `compute_value` is a function that is passed no arguments and returns a `Promise` resolving to the desired value. It will only be called if a value corresponding to `key` is not found
-- `close` is a function that saves the current state of the cache back to disk, removing any entries it is safe to do this. This is implemented synchronously, specifically so that it's safe to run in a `process.on('exit', () => { ... })` callback.
+- `close` is a function that saves the current state of the cache back to disk, removing any entries it is safe to. It does this synchronously, specifically so that it's safe to run in a `process.on('exit', () => { ... })` callback.
 
 ## Details
 
 The cache is persisted to disk as an object sent through `v8.serialize`, so anything you try to cache will need to be serializable by that function.
 
-When the `compute_value` function is called, the `Promise` that it returns will also be returned for any future calls issued with the same `key` before the `Promise` resolves.
+When the `compute_value` function is called, the `Promise` that it returns will also be used for any future calls issued with the same `key` before the `Promise` resolves.
 
 The response is only persisted to the cache if the `Promise` resolves successfully. Calling `cache.close()` will not save, update, or mark as used any results that were still pending at the time or that threw or returned a `Promise` that rejected.
 

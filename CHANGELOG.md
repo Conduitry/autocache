@@ -1,3 +1,7 @@
+# 0.1.5
+
+- Improve published types with generics
+
 # 0.1.4
 
 - Make loading cache synchronous to avoid race condition with closing cache before it's loaded

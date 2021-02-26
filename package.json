@@ -6,7 +6,7 @@
 		"cache"
 	],
 	"main": "dist/index.cjs.js",
-	"module": "dist/index.esm.js",
+	"module": "src/index.js",
 	"types": "types/index.d.ts",
 	"files": [
 		"dist",
@@ -25,12 +25,12 @@
 	"devDependencies": {
 		"@types/node": "=12",
 		"rollup": "^2",
-		"rollup-plugin-cheap-ts": "Conduitry/rollup-plugin-cheap-ts#semver:^1",
 		"typescript": "^4"
 	},
 	"scripts": {
 		"build": "rollup -c",
 		"dev": "rollup -cw",
+		"prepublishOnly": "tsc src/*.js --declaration --allowJs --emitDeclarationOnly --outDir types --lib esnext --downlevelIteration",
 		"prepare": "npm run build",
 		"pretest": "npm run build",
 		"test": "node test.js"

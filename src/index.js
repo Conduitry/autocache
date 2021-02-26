@@ -1,16 +1,28 @@
+// @ts-check
+
 import { createHash } from 'crypto';
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { serialize, deserialize } from 'v8';
 
-type Mode = string | number | boolean | null | undefined;
+/**
+ * @typedef {string | number | boolean | null | undefined} Mode
+ */
 
-export const autocache = (path: string, mode: Mode) => {
+/**
+ * @param {string} path
+ * @param {Mode} mode
+ */
+export const autocache = (path, mode) => {
 	path = resolve(path);
-	let cache = new Map<Mode, Map<string, any>>();
-	const all_entries = new Map<string, any>();
-	const used_entries = new Map<string, any>();
-	const pending_entries = new Map<string, Promise<any>>();
+	/** @type Map<Mode, Map<string, any>> */
+	let cache = new Map();
+	/** @type Map<string, any> */
+	const all_entries = new Map();
+	/** @type Map<string, any> */
+	const used_entries = new Map();
+	/** @type Map<string, Promise<any>> */
+	const pending_entries = new Map();
 	try {
 		const data = deserialize(readFileSync(path));
 		if (data && typeof data === 'object' && data.schema === 2 && data.cache instanceof Map) {
@@ -24,9 +36,13 @@ export const autocache = (path: string, mode: Mode) => {
 	} catch {}
 	cache.set(mode, used_entries);
 	return {
-		async cache(key: string, compute_value: () => Promise<any>) {
+		/**
+		 * @param {string} key
+		 * @param {() => Promise<any>} compute_value
+		 */
+		async cache(key, compute_value) {
 			const key_hashed = createHash('sha1').update(key).digest('hex');
-			let value: any;
+			let value;
 			if (all_entries.has(key_hashed)) {
 				value = all_entries.get(key_hashed);
 			} else if (pending_entries.has(key_hashed)) {

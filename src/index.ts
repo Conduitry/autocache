@@ -5,14 +5,22 @@ import { serialize, deserialize } from 'v8';
 
 type Mode = string | number | boolean | null | undefined;
 
-export const autocache = (path: string, mode: Mode) => {
-	path = resolve(path);
+export const autocache = (path: string | null, mode: Mode) => {
+	if (path == null) {
+		return {
+			async cache(key: string, compute_value: () => Promise<any>) {
+				return compute_value();
+			},
+			close() {},
+		};
+	}
+	const resolved_path = resolve(path);
 	let cache = new Map<Mode, Map<string, any>>();
 	const all_entries = new Map<string, any>();
 	const used_entries = new Map<string, any>();
 	const pending_entries = new Map<string, Promise<any>>();
 	try {
-		const data = deserialize(readFileSync(path));
+		const data = deserialize(readFileSync(resolved_path));
 		if (data && typeof data === 'object' && data.schema === 2 && data.cache instanceof Map) {
 			cache = data.cache;
 			for (const values of cache.values()) {
@@ -42,7 +50,7 @@ export const autocache = (path: string, mode: Mode) => {
 			return value;
 		},
 		close() {
-			writeFileSync(path, serialize({ schema: 2, cache }));
+			writeFileSync(resolved_path, serialize({ schema: 2, cache }));
 		},
 	};
 };

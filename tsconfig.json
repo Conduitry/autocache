@@ -5,6 +5,7 @@
 		"noUnusedLocals": true,
 		"removeComments": true,
 		"sourceMap": true,
+		"strictNullChecks": true,
 		"target": "esnext"
 	},
 	"include": ["src"]

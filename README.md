@@ -54,6 +54,10 @@ The response is only persisted to the cache if the `Promise` resolves successful
 
 Along with each cache entry is stored a list of the `mode`s that entry has been used in. Whenever an entry is used (either through a cache hit or a cache miss), the current `mode` is added to that entry's list. The current `mode` is removed from all other entries' lists, and those entries whose list of `mode`s is now empty are not written to disk when `cache.close()` is called.
 
+## Bypassing the cache
+
+You can completely bypass the cache by passing a `path` of `null` to `autocache`. This returns a `cache` that simply calls `compute_value` directly and a `close` that does nothing. This makes it easy to temporarily disable caching in your app without changing each call to `cache` and without deleting your cache file.
+
 ## License
 
 [MIT](LICENSE)

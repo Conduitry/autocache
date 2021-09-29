@@ -1,3 +1,8 @@
+# 0.1.6
+
+- Allow bypassing cache by passing a `path` of `null` to `autocache`
+- Fix `pkg.engines`, which should have indicated Node `>=12`, not Node `^12`
+
 # 0.1.5
 
 - Improve published types with generics

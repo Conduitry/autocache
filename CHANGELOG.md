@@ -1,3 +1,7 @@
+# 0.1.7
+
+- Expose CJS and ESM builds with `pkg.exports`
+
 # 0.1.6
 
 - Allow bypassing cache by passing a `path` of `null` to `autocache`

@@ -5,12 +5,20 @@
 	"keywords": [
 		"cache"
 	],
-	"main": "dist/index.cjs.js",
-	"module": "dist/index.esm.js",
-	"types": "types/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.ts"
+		},
+		"./package.json": "./package.json"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
 	"files": [
-		"dist",
-		"types"
+		"*.md",
+		"dist"
 	],
 	"engines": {
 		"node": ">=12"
